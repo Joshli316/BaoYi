@@ -1,0 +1,21 @@
+{
+  "name": "BaoYi 保易 — Health Insurance Navigator",
+  "short_name": "BaoYi",
+  "description": "Free bilingual health insurance navigator for international students in the US",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#080E1B",
+  "theme_color": "#080E1B",
+  "icons": [
+    {
+      "src": "assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

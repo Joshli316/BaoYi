@@ -1,0 +1,13 @@
+{
+  "name": "baoyi",
+  "version": "1.0.0",
+  "description": "Bilingual health insurance navigator for international students",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}

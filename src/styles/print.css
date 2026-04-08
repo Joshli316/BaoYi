@@ -1,0 +1,16 @@
+@media print {
+  #main-nav, #mobile-nav, #mobile-overlay, #hamburger-btn,
+  #disclaimer-bar, .btn-primary, .btn-secondary, .btn-ghost,
+  .stepper, .nav-tab, #lang-toggle, #dark-toggle { display: none !important; }
+
+  body { background: white; color: black; font-size: 12pt; }
+  h1 { font-size: 18pt; }
+  h2 { font-size: 14pt; }
+  h3 { font-size: 12pt; }
+
+  .card { border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid; }
+  .result-panel-pass, .result-panel-warn, .result-panel-fail { page-break-inside: avoid; }
+  .badge-compliant, .badge-warning, .badge-error { border: 1px solid currentColor; }
+
+  #app-content { max-width: 100%; padding: 0; }
+}

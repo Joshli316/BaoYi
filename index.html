@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BaoYi 保易 — Health Insurance Navigator</title>
+  <meta name="description" content="Free bilingual health insurance navigator for international students in the US. Check waiver eligibility, J-1 compliance, compare plans, and more.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080E1B">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+
+  <!-- Inter Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS v4 CDN -->
+  <script src="https://cdn.tailwindcss.com/4"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- Print Stylesheet -->
+  <link rel="stylesheet" href="print.css" media="print">
+
+  <style>
+    :root {
+      --navy-950: #080E1B;
+      --navy-900: #0F172A;
+      --navy-800: #1E293B;
+      --navy-700: #334155;
+      --emerald-500: #10B981;
+      --emerald-600: #059669;
+      --emerald-700: #047857;
+      --emerald-800: #065F46;
+      --emerald-50: #ECFDF5;
+      --amber-500: #F59E0B;
+      --amber-100: #FEF3C7;
+      --amber-800: #92400E;
+      --red-500: #EF4444;
+      --red-100: #FEE2E2;
+      --red-700: #B91C1C;
+      --slate-50: #F8FAFC;
+      --slate-100: #F1F5F9;
+      --slate-200: #E2E8F0;
+      --slate-300: #CBD5E1;
+      --slate-400: #94A3B8;
+      --slate-600: #475569;
+      --white: #FFFFFF;
+
+      /* Dark mode overrides */
+      --bg-page: var(--slate-50);
+      --bg-card: var(--white);
+      --bg-alt: var(--slate-100);
+      --text-heading: var(--navy-900);
+      --text-body: var(--slate-600);
+      --text-muted: var(--slate-400);
+      --border-color: var(--slate-200);
+      --border-input: var(--slate-300);
+    }
+
+    .dark {
+      --bg-page: #0B1120;
+      --bg-card: #111827;
+      --bg-alt: #1E293B;
+      --text-heading: #F1F5F9;
+      --text-body: #CBD5E1;
+      --text-muted: #64748B;
+      --border-color: #334155;
+      --border-input: #475569;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-body);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+    }
+
+    html[lang="zh"] body,
+    html[lang="zh"] .zh-text {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+      line-height: 1.8;
+    }
+
+    html[lang="zh"] h1, html[lang="zh"] h2, html[lang="zh"] h3 {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+      line-height: 1.4;
+    }
+
+    h1 { font-size: 2.25rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.025em; color: var(--text-heading); }
+    h2 { font-size: 1.75rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.02em; color: var(--text-heading); }
+    h3 { font-size: 1.25rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; color: var(--text-heading); }
+
+    .font-mono {
+      font-family: 'SF Mono', 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .btn-primary {
+      background: var(--emerald-600);
+      color: white;
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 150ms ease-in-out;
+    }
+    .btn-primary:hover { background: var(--emerald-700); }
+    .btn-primary:active { background: var(--emerald-800); }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-heading);
+      border: 1px solid var(--border-input);
+      border-radius: 9999px;
+      padding: 12px 24px;
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+    }
+    .btn-secondary:hover { background: var(--slate-50); border-color: var(--slate-400); }
+    .dark .btn-secondary:hover { background: var(--navy-800); }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--emerald-600);
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+    }
+    .btn-ghost:hover { background: var(--emerald-50); }
+    .dark .btn-ghost:hover { background: rgba(16,185,129,0.1); }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      transition: all 150ms ease-in-out;
+    }
+    .card:hover {
+      box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+      border-left: 4px solid var(--emerald-500);
+    }
+
+    .badge-compliant {
+      background: var(--emerald-500);
+      color: white;
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-warning {
+      background: var(--amber-100);
+      color: var(--amber-800);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-error {
+      background: var(--red-100);
+      color: var(--red-700);
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .badge-info {
+      background: var(--navy-800);
+      color: white;
+      border-radius: 9999px;
+      padding: 4px 12px;
+      font-size: 0.8125rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .result-panel-pass {
+      border-left: 4px solid var(--emerald-500);
+      background: var(--emerald-50);
+      padding: 24px;
+    }
+    .dark .result-panel-pass { background: rgba(16,185,129,0.08); }
+    .result-panel-warn {
+      border-left: 4px solid var(--amber-500);
+      background: var(--amber-100);
+      padding: 24px;
+    }
+    .dark .result-panel-warn { background: rgba(245,158,11,0.08); }
+    .result-panel-fail {
+      border-left: 4px solid var(--red-500);
+      background: var(--red-100);
+      padding: 24px;
+    }
+    .dark .result-panel-fail { background: rgba(239,68,68,0.08); }
+
+    .input-field {
+      border-radius: 6px;
+      border: 1px solid var(--border-input);
+      padding: 12px 16px;
+      font-size: 1rem;
+      width: 100%;
+      background: var(--bg-card);
+      color: var(--text-heading);
+      transition: all 150ms ease-in-out;
+    }
+    .input-field:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--emerald-500);
+      border-color: var(--emerald-500);
+    }
+    .input-field.error {
+      box-shadow: 0 0 0 2px var(--red-500);
+      border-color: var(--red-500);
+    }
+
+    select.input-field {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394A3B8' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 40px;
+    }
+
+    /* Wizard stepper */
+    .stepper { display: flex; align-items: center; gap: 8px; margin-bottom: 32px; }
+    .stepper-step {
+      width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 0.875rem; transition: all 150ms ease-in-out; flex-shrink: 0;
+    }
+    .stepper-step.active { background: var(--emerald-600); color: white; }
+    .stepper-step.completed { background: var(--emerald-600); color: white; }
+    .stepper-step.upcoming { background: var(--slate-300); color: var(--slate-600); }
+    .dark .stepper-step.upcoming { background: var(--navy-700); color: var(--slate-400); }
+    .stepper-line { flex: 1; height: 2px; background: var(--slate-300); min-width: 16px; }
+    .dark .stepper-line { background: var(--navy-700); }
+    .stepper-line.completed { background: var(--emerald-500); }
+
+    /* Nav */
+    #main-nav { background: var(--navy-950); }
+    .nav-tab {
+      color: #94A3B8;
+      padding: 12px 16px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-bottom: 3px solid transparent;
+      cursor: pointer;
+      transition: all 150ms ease-in-out;
+      white-space: nowrap;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .nav-tab:hover { color: #E2E8F0; }
+    .nav-tab.active { color: white; border-bottom-color: var(--emerald-500); }
+
+    /* Mobile nav */
+    #mobile-nav {
+      position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+      background: var(--navy-950); z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 200ms ease-in-out;
+      overflow-y: auto;
+    }
+    #mobile-nav.open { transform: translateX(0); }
+    #mobile-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40;
+      display: none;
+    }
+    #mobile-overlay.open { display: block; }
+
+    .mobile-nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px; color: #94A3B8; font-size: 0.9375rem;
+      cursor: pointer; transition: all 150ms ease-in-out;
+      border: none; background: none; width: 100%; text-align: left;
+    }
+    .mobile-nav-item:hover { color: white; background: rgba(255,255,255,0.05); }
+    .mobile-nav-item.active { color: white; border-left: 3px solid var(--emerald-500); background: rgba(16,185,129,0.08); }
+
+    /* Accordion */
+    .accordion-content { max-height: 0; overflow: hidden; transition: max-height 200ms ease-in-out; }
+    .accordion-content.open { max-height: 2000px; }
+
+    /* Transitions */
+    .fade-in { animation: fadeIn 200ms ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .slide-left { animation: slideLeft 200ms ease-in-out; }
+    @keyframes slideLeft { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    /* Responsive */
+    @media (max-width: 639px) {
+      h1 { font-size: 1.75rem; }
+      h2 { font-size: 1.375rem; }
+      .stepper { flex-direction: column; align-items: flex-start; }
+      .stepper-line { width: 2px; height: 16px; min-width: 2px; }
+    }
+
+    /* Disclaimer bar */
+    #disclaimer-bar {
+      background: var(--navy-800);
+      color: var(--slate-400);
+      font-size: 0.875rem;
+      padding: 12px 0;
+      margin-top: auto;
+    }
+
+    /* Focus ring */
+    :focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--emerald-500), 0 0 0 4px rgba(16,185,129,0.2);
+    }
+
+    /* Table */
+    .comparison-table th {
+      background: var(--navy-900);
+      color: white;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+    }
+    .comparison-table td { padding: 12px 16px; border-bottom: 1px solid var(--border-color); }
+    .comparison-table tr:nth-child(even) td { background: var(--bg-alt); }
+    .best-value { background: var(--emerald-50) !important; border-top: 3px solid var(--emerald-500); }
+    .dark .best-value { background: rgba(16,185,129,0.08) !important; }
+
+    /* Misconception callout */
+    .misconception-callout {
+      border-left: 4px solid var(--amber-500);
+      background: var(--amber-100);
+      padding: 16px;
+      margin-top: 12px;
+    }
+    .dark .misconception-callout { background: rgba(245,158,11,0.08); }
+
+    /* Worked example box */
+    .worked-example {
+      background: var(--slate-100);
+      padding: 16px;
+      margin-top: 12px;
+    }
+    .dark .worked-example { background: var(--bg-alt); }
+
+    /* Cost bar visual */
+    .cost-bar { height: 32px; border-radius: 4px; display: flex; overflow: hidden; }
+    .cost-bar-insurance { background: var(--emerald-500); }
+    .cost-bar-patient { background: var(--red-500); }
+
+    /* Flow diagram */
+    .flow-step {
+      display: flex; align-items: center; gap: 8px;
+    }
+    .flow-arrow { color: var(--slate-400); }
+  </style>
+</head>
+<body>
+  <!-- Top Navigation -->
+  <nav id="main-nav">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 16px;">
+      <!-- Desktop Nav -->
+      <div style="display: flex; align-items: center; height: 56px;">
+        <!-- Logo -->
+        <a href="#home" id="nav-logo" style="display: flex; align-items: center; gap: 8px; color: white; text-decoration: none; font-weight: 700; font-size: 1.125rem; flex-shrink: 0; margin-right: 24px;">
+          <span id="logo-icon" style="color: var(--emerald-500);"></span>
+          BaoYi 保易
+        </a>
+
+        <!-- Hamburger (mobile) -->
+        <button id="hamburger-btn" style="display: none; background: none; border: none; color: white; cursor: pointer; margin-left: auto; padding: 8px;" aria-label="Open menu">
+          <span id="hamburger-icon"></span>
+        </button>
+
+        <!-- Desktop tabs -->
+        <div id="desktop-tabs" style="display: flex; align-items: center; flex: 1; overflow-x: auto; gap: 0;">
+          <button class="nav-tab" data-tab="home" id="tab-home"></button>
+          <button class="nav-tab" data-tab="waiver" id="tab-waiver"></button>
+          <button class="nav-tab" data-tab="j1" id="tab-j1"></button>
+          <button class="nav-tab" data-tab="compare" id="tab-compare"></button>
+          <button class="nav-tab" data-tab="glossary" id="tab-glossary"></button>
+          <button class="nav-tab" data-tab="wheretogo" id="tab-wheretogo"></button>
+          <button class="nav-tab" data-tab="cost" id="tab-cost"></button>
+          <button class="nav-tab" data-tab="mentalhealth" id="tab-mentalhealth"></button>
+          <button class="nav-tab" data-tab="bill" id="tab-bill"></button>
+        </div>
+
+        <!-- Right controls -->
+        <div style="display: flex; align-items: center; gap: 12px; margin-left: 16px; flex-shrink: 0;">
+          <button id="lang-toggle" class="btn-ghost" style="color: #94A3B8; font-size: 0.875rem; padding: 6px 12px;">EN / 中文</button>
+          <button id="dark-toggle" style="background: none; border: none; color: #94A3B8; cursor: pointer; padding: 6px;" aria-label="Toggle dark mode">
+            <span id="dark-toggle-icon"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Overlay -->
+  <div id="mobile-overlay"></div>
+
+  <!-- Mobile Slide-out Nav -->
+  <nav id="mobile-nav">
+    <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--navy-700);">
+      <span style="color: white; font-weight: 700; font-size: 1.125rem; display: flex; align-items: center; gap: 8px;">
+        <span id="mobile-logo-icon" style="color: var(--emerald-500);"></span>
+        BaoYi 保易
+      </span>
+      <button id="close-mobile-nav" style="background: none; border: none; color: #94A3B8; cursor: pointer; padding: 8px;" aria-label="Close menu">
+        <span id="close-icon"></span>
+      </button>
+    </div>
+    <div id="mobile-nav-items" style="padding: 8px 0;"></div>
+    <div style="padding: 16px 20px; border-top: 1px solid var(--navy-700); display: flex; gap: 12px;">
+      <button id="mobile-lang-toggle" class="btn-ghost" style="color: #94A3B8; font-size: 0.875rem;">EN / 中文</button>
+      <button id="mobile-dark-toggle" style="background: none; border: none; color: #94A3B8; cursor: pointer; padding: 6px;">
+        <span id="mobile-dark-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main id="app-content" style="flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; padding: 32px 16px 64px;">
+    <!-- Content injected by app.ts -->
+  </main>
+
+  <!-- Disclaimer Bar -->
+  <footer id="disclaimer-bar">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 8px;">
+      <span id="disclaimer-icon"></span>
+      <span id="disclaimer-text"></span>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Initialize Lucide icons after app loads
+    if (window.lucide) window.lucide.createIcons();
+  </script>
+</body>
+</html>
