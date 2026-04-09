@@ -1,4 +1,5 @@
 import { t, getLang, toggleLang, initLang, setLang } from './i18n';
+import { refreshIcons } from './utils/ui';
 
 // Feature module imports (lazy-loaded functions)
 type RenderFn = (container: HTMLElement) => void;
@@ -10,14 +11,14 @@ interface FeatureModule {
 }
 
 const featureModules: Record<string, () => Promise<FeatureModule>> = {
-  waiver: () => import('./features/waiver').then(m => m),
-  j1: () => import('./features/j1compliance').then(m => m),
-  compare: () => import('./features/compare').then(m => m),
-  glossary: () => import('./features/glossary').then(m => m),
-  wheretogo: () => import('./features/wheretogo').then(m => m),
-  cost: () => import('./features/cost').then(m => m),
-  mentalhealth: () => import('./features/mentalhealth').then(m => m),
-  bill: () => import('./features/bill').then(m => m),
+  waiver: () => import('./features/waiver'),
+  j1: () => import('./features/j1compliance'),
+  compare: () => import('./features/compare'),
+  glossary: () => import('./features/glossary'),
+  wheretogo: () => import('./features/wheretogo'),
+  cost: () => import('./features/cost'),
+  mentalhealth: () => import('./features/mentalhealth'),
+  bill: () => import('./features/bill'),
 };
 
 const tabIcons: Record<string, string> = {
@@ -56,7 +57,7 @@ function updateDarkIcon(): void {
   document.querySelectorAll('#dark-toggle-icon, #mobile-dark-icon').forEach(el => {
     el.setAttribute('data-lucide', iconName);
   });
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 // --- Navigation ---
@@ -84,16 +85,23 @@ async function renderTab(tab: string): Promise<void> {
   if (tab === 'home') {
     renderHome(container);
   } else if (featureModules[tab]) {
+    // Show loading skeleton while chunk loads
+    container.innerHTML = `<div style="max-width:720px;margin:0 auto;padding:24px 0;">
+      <div style="height:32px;width:260px;background:var(--border-color);border-radius:4px;margin-bottom:16px;animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div style="height:16px;width:400px;background:var(--border-color);border-radius:4px;margin-bottom:32px;animation:pulse 1.5s ease-in-out infinite;"></div>
+      <div style="height:200px;background:var(--border-color);border-radius:4px;animation:pulse 1.5s ease-in-out infinite;"></div>
+    </div>`;
     try {
       const mod = await featureModules[tab]();
+      container.innerHTML = '';
       mod.render(container);
       currentCleanup = mod.cleanup;
     } catch (e) {
-      container.innerHTML = `<div style="padding:48px;text-align:center;color:var(--red-700);">Failed to load module. Please refresh.</div>`;
+      container.innerHTML = `<div style="padding:48px;text-align:center;color:var(--red-700);">${t('error.loadFailed')}</div>`;
     }
   }
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
   window.scrollTo(0, 0);
 }
 
@@ -211,13 +219,24 @@ function buildMobileNav(): void {
 
 // --- Mobile nav ---
 function openMobileNav(): void {
-  document.getElementById('mobile-nav')?.classList.add('open');
-  document.getElementById('mobile-overlay')?.classList.add('open');
+  const nav = document.getElementById('mobile-nav');
+  const overlay = document.getElementById('mobile-overlay');
+  nav?.classList.add('open');
+  nav?.setAttribute('aria-hidden', 'false');
+  overlay?.classList.add('open');
+  // Focus first nav item for keyboard users
+  const firstItem = nav?.querySelector('.mobile-nav-item') as HTMLElement | null;
+  firstItem?.focus();
 }
 
 function closeMobileNav(): void {
-  document.getElementById('mobile-nav')?.classList.remove('open');
-  document.getElementById('mobile-overlay')?.classList.remove('open');
+  const nav = document.getElementById('mobile-nav');
+  const overlay = document.getElementById('mobile-overlay');
+  nav?.classList.remove('open');
+  nav?.setAttribute('aria-hidden', 'true');
+  overlay?.classList.remove('open');
+  // Return focus to hamburger
+  document.getElementById('hamburger-btn')?.focus();
 }
 
 // --- Responsive check ---
@@ -275,6 +294,11 @@ function init(): void {
   document.getElementById('dark-toggle')?.addEventListener('click', toggleDarkMode);
   document.getElementById('mobile-dark-toggle')?.addEventListener('click', toggleDarkMode);
 
+  // Escape key closes mobile nav
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMobileNav();
+  });
+
   // Hash routing
   window.addEventListener('hashchange', () => {
     const tab = getTabFromHash();
@@ -290,6 +314,15 @@ function init(): void {
 
   // Update all text (sets nav labels, disclaimer)
   updateAllText();
+
+  // Back to top button
+  const backToTop = document.getElementById('back-to-top');
+  if (backToTop) {
+    window.addEventListener('scroll', () => {
+      backToTop.style.display = window.scrollY > 400 ? 'flex' : 'none';
+    });
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  }
 
   // Register service worker
   if ('serviceWorker' in navigator) {

@@ -1,3 +1,4 @@
+import { refreshIcons } from '../utils/ui';
 import { t, getLang } from '../i18n';
 import { formatMoney } from '../utils/calculator';
 
@@ -111,7 +112,7 @@ function renderUI(): void {
     resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderField(id: string, label: string): string {
@@ -152,29 +153,29 @@ function renderExplanation(el: HTMLElement, data: BillData, lang: string): void 
     <div class="worked-example" style="margin-bottom:32px;">
       <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;justify-content:center;">
         <div style="text-align:center;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;">
-          <div style="font-size:0.75rem;color:var(--text-muted);">${lang === 'zh' ? '账单金额' : 'Billed'}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">${t('bill.flow.billed')}</div>
           <div class="font-mono" style="font-size:1.125rem;color:var(--text-heading);">${formatMoney(data.billedAmount)}</div>
         </div>
         <i data-lucide="arrow-right" class="flow-arrow" style="width:20px;height:20px;"></i>
         <div style="text-align:center;padding:12px 16px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:6px;">
-          <div style="font-size:0.75rem;color:var(--text-muted);">${lang === 'zh' ? '保险认可' : 'Allowed'}</div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">${t('bill.flow.allowed')}</div>
           <div class="font-mono" style="font-size:1.125rem;color:var(--text-heading);">${formatMoney(data.allowedAmount)}</div>
         </div>
         <i data-lucide="arrow-right" class="flow-arrow" style="width:20px;height:20px;"></i>
         <div style="text-align:center;padding:12px 16px;background:var(--emerald-50);border:1px solid var(--emerald-500);border-radius:6px;">
-          <div style="font-size:0.75rem;color:var(--emerald-700);">${lang === 'zh' ? '保险支付' : 'Insurance Pays'}</div>
+          <div style="font-size:0.75rem;color:var(--emerald-700);">${t('bill.flow.insurancePays')}</div>
           <div class="font-mono" style="font-size:1.125rem;color:var(--emerald-700);">${formatMoney(data.insurancePaid)}</div>
         </div>
         <i data-lucide="arrow-right" class="flow-arrow" style="width:20px;height:20px;"></i>
         <div style="text-align:center;padding:12px 16px;background:var(--red-100);border:1px solid var(--red-500);border-radius:6px;">
-          <div style="font-size:0.75rem;color:var(--red-700);">${lang === 'zh' ? '你需支付' : 'You Pay'}</div>
+          <div style="font-size:0.75rem;color:var(--red-700);">${t('bill.flow.youPay')}</div>
           <div class="font-mono" style="font-size:1.125rem;color:var(--red-700);">${formatMoney(data.patientResponsibility)}</div>
         </div>
       </div>
     </div>
   `;
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function getBillingErrors(lang: string): string[] {

@@ -14,5 +14,5 @@ export function loadState<T>(key: string): T | null {
 }
 
 export function clearState(key: string): void {
-  sessionStorage.removeItem(PREFIX + key);
+  try { sessionStorage.removeItem(PREFIX + key); } catch { /* private mode */ }
 }

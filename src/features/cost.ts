@@ -2,6 +2,7 @@ import { t, getLang } from '../i18n';
 import { medicalScenarios, defaultSHIPPlan, MedicalScenario } from '../data/scenarios';
 import { PlanDetails, calculateCosts, ServiceItem, formatMoney } from '../utils/calculator';
 import { saveState, loadState } from '../utils/storage';
+import { renderStepper, refreshIcons } from '../utils/ui';
 
 interface CostState {
   step: number;
@@ -19,7 +20,7 @@ function init(): void {
     step: 1,
     scenarioId: '',
     useDefaults: true,
-    plan: { ...defaultSHIPPlan, monthlyPremium: defaultSHIPPlan.monthlyPremium, annualDeductible: defaultSHIPPlan.annualDeductible, coinsurancePercent: defaultSHIPPlan.coinsurancePercent, oopMax: defaultSHIPPlan.oopMax, copayPCP: defaultSHIPPlan.copayPCP, copaySpecialist: defaultSHIPPlan.copaySpecialist, copayER: defaultSHIPPlan.copayER, copayUrgentCare: defaultSHIPPlan.copayUrgentCare },
+    plan: { ...defaultSHIPPlan },
   };
 }
 
@@ -58,7 +59,7 @@ function renderStep(): void {
 
   wrapper.appendChild(content);
   container.appendChild(wrapper);
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderStep1(el: HTMLElement): void {
@@ -115,7 +116,7 @@ function renderStep2(el: HTMLElement): void {
   el.querySelector('#use-defaults')?.addEventListener('change', (e) => {
     state.useDefaults = (e.target as HTMLInputElement).checked;
     if (state.useDefaults) {
-      state.plan = { ...defaultSHIPPlan, monthlyPremium: defaultSHIPPlan.monthlyPremium, annualDeductible: defaultSHIPPlan.annualDeductible, coinsurancePercent: defaultSHIPPlan.coinsurancePercent, oopMax: defaultSHIPPlan.oopMax, copayPCP: defaultSHIPPlan.copayPCP, copaySpecialist: defaultSHIPPlan.copaySpecialist, copayER: defaultSHIPPlan.copayER, copayUrgentCare: defaultSHIPPlan.copayUrgentCare };
+      state.plan = { ...defaultSHIPPlan };
     }
     save();
     renderStep();
@@ -144,7 +145,7 @@ function renderStep3(el: HTMLElement): void {
     usesCopay: false,
   }));
 
-  const plan: PlanDetails = state.useDefaults ? { ...defaultSHIPPlan, monthlyPremium: defaultSHIPPlan.monthlyPremium, annualDeductible: defaultSHIPPlan.annualDeductible, coinsurancePercent: defaultSHIPPlan.coinsurancePercent, oopMax: defaultSHIPPlan.oopMax, copayPCP: defaultSHIPPlan.copayPCP, copaySpecialist: defaultSHIPPlan.copaySpecialist, copayER: defaultSHIPPlan.copayER, copayUrgentCare: defaultSHIPPlan.copayUrgentCare } : state.plan;
+  const plan: PlanDetails = state.useDefaults ? { ...defaultSHIPPlan } : state.plan;
 
   const result = calculateCosts(plan, services);
   const totalBilled = scenario.totalBilled;
@@ -171,7 +172,7 @@ function renderStep3(el: HTMLElement): void {
         <span style="color:var(--emerald-700);">${t('cost.insurancePays')} ${insurancePct}%</span>
         <span style="color:var(--red-700);">${t('cost.yourResponsibility')} ${patientPct}%</span>
       </div>
-      <div class="cost-bar">
+      <div class="cost-bar" role="img" aria-label="${t('cost.insurancePays')} ${insurancePct}%, ${t('cost.yourResponsibility')} ${patientPct}%">
         <div class="cost-bar-insurance" style="width:${insurancePct}%;"></div>
         <div class="cost-bar-patient" style="width:${patientPct}%;"></div>
       </div>
@@ -226,10 +227,22 @@ function renderStep3(el: HTMLElement): void {
       <button class="btn-secondary" id="cost-back3">${t('common.back')}</button>
       <button class="btn-primary" id="cost-reset">${t('common.reset')}</button>
     </div>
+
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border-color);">
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:12px;">${t('common.whatsNext')}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="#bill" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="receipt" style="width:16px;height:16px;"></i> ${t('nav.bill')}
+        </a>
+        <a href="#glossary" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="book-open" style="width:16px;height:16px;"></i> ${t('nav.glossary')}
+        </a>
+      </div>
+    </div>
   `;
 
   el.querySelector('#cost-back3')?.addEventListener('click', () => { state.step = 2; save(); renderStep(); });
-  el.querySelector('#cost-reset')?.addEventListener('click', () => { state = { step: 1, scenarioId: '', useDefaults: true, plan: { ...defaultSHIPPlan, monthlyPremium: defaultSHIPPlan.monthlyPremium, annualDeductible: defaultSHIPPlan.annualDeductible, coinsurancePercent: defaultSHIPPlan.coinsurancePercent, oopMax: defaultSHIPPlan.oopMax, copayPCP: defaultSHIPPlan.copayPCP, copaySpecialist: defaultSHIPPlan.copaySpecialist, copayER: defaultSHIPPlan.copayER, copayUrgentCare: defaultSHIPPlan.copayUrgentCare } }; save(); renderStep(); });
+  el.querySelector('#cost-reset')?.addEventListener('click', () => { state = { step: 1, scenarioId: '', useDefaults: true, plan: { ...defaultSHIPPlan } }; save(); renderStep(); });
 }
 
 function renderPlanInputs(): string {
@@ -250,19 +263,3 @@ function renderPlanInputs(): string {
   `).join('');
 }
 
-function renderStepper(current: number, total: number): HTMLElement {
-  const stepper = document.createElement('div');
-  stepper.className = 'stepper';
-  for (let i = 1; i <= total; i++) {
-    const step = document.createElement('div');
-    step.className = `stepper-step ${i < current ? 'completed' : i === current ? 'active' : 'upcoming'}`;
-    step.textContent = i < current ? '✓' : String(i);
-    stepper.appendChild(step);
-    if (i < total) {
-      const line = document.createElement('div');
-      line.className = `stepper-line ${i < current ? 'completed' : ''}`;
-      stepper.appendChild(line);
-    }
-  }
-  return stepper;
-}

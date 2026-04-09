@@ -8,7 +8,7 @@ const distDir = path.join(__dirname, 'dist');
 if (!fs.existsSync(distDir)) fs.mkdirSync(distDir, { recursive: true });
 
 // Copy static files to dist
-const staticFiles = ['index.html', 'manifest.json', 'sw.js', '_headers', '_redirects'];
+const staticFiles = ['index.html', 'manifest.json', 'sw.js', '_headers', '_redirects', 'robots.txt', 'sitemap.xml'];
 for (const file of staticFiles) {
   const src = path.join(__dirname, file);
   const dest = path.join(distDir, file);
@@ -45,11 +45,13 @@ function copyDir(src, dest) {
 const buildOptions = {
   entryPoints: ['src/app.ts'],
   bundle: true,
-  outfile: 'dist/app.js',
-  format: 'iife',
+  outdir: 'dist',
+  format: 'esm',
+  splitting: true,
   target: 'es2020',
   sourcemap: true,
   minify: !isWatch,
+  chunkNames: 'chunks/[name]-[hash]',
 };
 
 if (isWatch) {

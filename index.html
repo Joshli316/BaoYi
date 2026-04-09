@@ -5,20 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BaoYi 保易 — Health Insurance Navigator</title>
   <meta name="description" content="Free bilingual health insurance navigator for international students in the US. Check waiver eligibility, J-1 compliance, compare plans, and more.">
+  <link rel="canonical" href="https://baoyi.pages.dev/">
+  <meta property="og:title" content="BaoYi 保易 — Health Insurance Navigator">
+  <meta property="og:description" content="Free bilingual tool helping international students navigate US health insurance — waiver checks, J-1 compliance, plan comparison, and cost estimation.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://baoyi.pages.dev/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="BaoYi 保易 — Health Insurance Navigator">
+  <meta name="twitter:description" content="Free bilingual tool helping international students navigate US health insurance.">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#080E1B">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <link rel="apple-touch-icon" href="assets/icons/icon-192.png">
 
   <!-- Inter Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>@font-face { font-display: swap; }</style>
 
   <!-- Tailwind CSS v4 CDN -->
-  <script src="https://cdn.tailwindcss.com/4"></script>
+  <script src="https://cdn.tailwindcss.com/4" integrity="sha384-2I+QQP8GBYPjRSKSQE9nT8SJhvHBv2q035t1AmFn/MT+OaDmVjHWU5IufWiN0BoR" crossorigin="anonymous"></script>
 
-  <!-- Lucide Icons CDN -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Lucide Icons CDN (pinned version) -->
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu" crossorigin="anonymous"></script>
 
   <!-- Print Stylesheet -->
   <link rel="stylesheet" href="print.css" media="print">
@@ -287,6 +298,7 @@
       border-left: none;
       border-right: none;
     }
+    #desktop-tabs::-webkit-scrollbar { display: none; }
     .nav-tab:hover { color: #E2E8F0; }
     .nav-tab.active { color: white; border-bottom-color: var(--emerald-500); }
 
@@ -323,6 +335,7 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     .slide-left { animation: slideLeft 200ms ease-in-out; }
     @keyframes slideLeft { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.15; } }
 
     /* Responsive */
     @media (max-width: 639px) {
@@ -389,9 +402,14 @@
       display: flex; align-items: center; gap: 8px;
     }
     .flow-arrow { color: var(--slate-400); }
+
+    /* Skip link */
+    .skip-link:focus { left: 0; }
   </style>
 </head>
 <body>
+  <a href="#app-content" class="skip-link" style="position:absolute;left:-9999px;top:0;z-index:100;padding:12px 24px;background:var(--emerald-600);color:white;font-weight:600;border-radius:0 0 6px 0;transition:left 150ms;">Skip to content</a>
+
   <!-- Top Navigation -->
   <nav id="main-nav">
     <div style="max-width: 1280px; margin: 0 auto; padding: 0 16px;">
@@ -409,7 +427,7 @@
         </button>
 
         <!-- Desktop tabs -->
-        <div id="desktop-tabs" style="display: flex; align-items: center; flex: 1; overflow-x: auto; gap: 0;">
+        <div id="desktop-tabs" style="display: flex; align-items: center; flex: 1; overflow-x: auto; gap: 0; scrollbar-width: none;">
           <button class="nav-tab" data-tab="home" id="tab-home"></button>
           <button class="nav-tab" data-tab="waiver" id="tab-waiver"></button>
           <button class="nav-tab" data-tab="j1" id="tab-j1"></button>
@@ -433,10 +451,10 @@
   </nav>
 
   <!-- Mobile Overlay -->
-  <div id="mobile-overlay"></div>
+  <div id="mobile-overlay" aria-hidden="true"></div>
 
   <!-- Mobile Slide-out Nav -->
-  <nav id="mobile-nav">
+  <nav id="mobile-nav" aria-label="Mobile navigation" aria-hidden="true">
     <div style="padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--navy-700);">
       <span style="color: white; font-weight: 700; font-size: 1.125rem; display: flex; align-items: center; gap: 8px;">
         <span id="mobile-logo-icon" style="color: var(--emerald-500);"></span>
@@ -456,7 +474,7 @@
   </nav>
 
   <!-- Main Content -->
-  <main id="app-content" style="flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; padding: 32px 16px 64px;">
+  <main id="app-content" role="main" style="flex: 1; max-width: 1280px; margin: 0 auto; width: 100%; padding: 32px 16px 64px;">
     <!-- Content injected by app.ts -->
   </main>
 
@@ -468,7 +486,12 @@
     </div>
   </footer>
 
-  <script src="app.js"></script>
+  <!-- Back to top -->
+  <button id="back-to-top" aria-label="Back to top" style="position:fixed;bottom:24px;right:24px;width:44px;height:44px;border-radius:50%;background:var(--emerald-600);color:white;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.2);z-index:30;transition:opacity 150ms ease-in-out;">
+    <i data-lucide="arrow-up" style="width:20px;height:20px;"></i>
+  </button>
+
+  <script type="module" src="app.js"></script>
   <script>
     // Initialize Lucide icons after app loads
     if (window.lucide) window.lucide.createIcons();

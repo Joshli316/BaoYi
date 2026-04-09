@@ -1,5 +1,10 @@
+import { refreshIcons } from '../utils/ui';
 import { t, getLang } from '../i18n';
 import { glossaryTerms, GlossaryTerm } from '../data/glossary-terms';
+
+function escAttr(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 let container: HTMLElement;
 let openTermId: string | null = null;
@@ -36,7 +41,7 @@ function renderUI(filter: string): void {
     <p style="margin-bottom:24px;color:var(--text-body);">${t('glossary.subtitle')}</p>
 
     <div style="margin-bottom:32px;">
-      <input type="text" class="input-field" id="glossary-search" placeholder="${t('common.search')}" value="${filter}" style="max-width:400px;">
+      <input type="text" class="input-field" id="glossary-search" placeholder="${t('common.search')}" value="${escAttr(filter)}" style="max-width:400px;">
     </div>
 
     <div id="glossary-list" style="display:grid;gap:8px;">
@@ -71,17 +76,21 @@ function renderUI(filter: string): void {
       if (openTermId === termId) {
         content.classList.remove('open');
         chevron.style.transform = 'rotate(0deg)';
+        (btn as HTMLElement).setAttribute('aria-expanded', 'false');
         openTermId = null;
       } else {
         // Close previous
         if (openTermId) {
           const prev = wrapper.querySelector(`#accordion-${openTermId}`);
           const prevChevron = wrapper.querySelector(`[data-term-id="${openTermId}"] .chevron`) as HTMLElement;
+          const prevBtn = wrapper.querySelector(`[data-term-id="${openTermId}"]`) as HTMLElement;
           prev?.classList.remove('open');
           if (prevChevron) prevChevron.style.transform = 'rotate(0deg)';
+          if (prevBtn) prevBtn.setAttribute('aria-expanded', 'false');
         }
         content.classList.add('open');
         chevron.style.transform = 'rotate(180deg)';
+        (btn as HTMLElement).setAttribute('aria-expanded', 'true');
         openTermId = termId;
       }
     });
@@ -110,7 +119,7 @@ function renderUI(filter: string): void {
     });
   });
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderTermAccordion(term: GlossaryTerm, lang: string): string {
@@ -123,10 +132,10 @@ function renderTermAccordion(term: GlossaryTerm, lang: string): string {
 
   return `
     <div class="card" style="padding:0;">
-      <button class="accordion-toggle" data-term-id="${term.id}" style="width:100%;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:none;border:none;cursor:pointer;text-align:left;">
+      <button class="accordion-toggle" data-term-id="${term.id}" aria-expanded="${isOpen}" aria-controls="accordion-${term.id}" style="width:100%;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;background:none;border:none;cursor:pointer;text-align:left;">
         <div>
-          <span style="font-weight:700;color:var(--text-heading);font-size:1.0625rem;">${termName}</span>
-          <span style="color:var(--text-muted);font-size:0.875rem;margin-left:8px;">${termNameSecondary}</span>
+          <span style="font-weight:800;color:var(--text-heading);font-size:1.1875rem;letter-spacing:-0.01em;">${termName}</span>
+          <span style="color:var(--text-muted);font-size:0.8125rem;margin-left:10px;">${termNameSecondary}</span>
         </div>
         <i data-lucide="chevron-down" class="chevron" style="width:18px;height:18px;color:var(--text-muted);flex-shrink:0;transition:transform 200ms;${isOpen ? 'transform:rotate(180deg);' : ''}"></i>
       </button>

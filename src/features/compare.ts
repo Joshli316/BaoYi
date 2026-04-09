@@ -1,3 +1,4 @@
+import { refreshIcons } from '../utils/ui';
 import { t, getLang } from '../i18n';
 import { PlanDetails, calculateCosts, ServiceItem, formatMoney } from '../utils/calculator';
 import { saveState, loadState } from '../utils/storage';
@@ -35,6 +36,12 @@ const scenarios: { services: ServiceItem[]; }[] = [
     { description: 'Follow-up #2', billedAmount: 300, usesCopay: true, copayType: 'specialist' },
   ]},
 ];
+
+function esc(s: string): string {
+  const d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
 
 let state: CompareState;
 let container: HTMLElement;
@@ -105,7 +112,7 @@ function renderUI(): void {
     card.style.padding = '20px';
     card.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-        <input type="text" class="input-field plan-name" data-idx="${i}" value="${state.planNames[i] || `Plan ${i + 1}`}" style="font-weight:700;border:none;padding:4px 0;font-size:1.125rem;background:transparent;color:var(--text-heading);">
+        <input type="text" class="input-field plan-name" data-idx="${i}" value="${esc(state.planNames[i] || `Plan ${i + 1}`)}" style="font-weight:700;border:none;padding:4px 0;font-size:1.125rem;background:transparent;color:var(--text-heading);">
         ${state.plans.length > 1 ? `<button class="btn-ghost remove-plan" data-idx="${i}" style="font-size:0.8125rem;color:var(--red-600);">${t('compare.removePlan')}</button>` : ''}
       </div>
       ${renderPlanFields(plan, i)}
@@ -162,7 +169,7 @@ function renderUI(): void {
     });
   });
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderPlanFields(plan: PlanDetails, idx: number): string {
@@ -202,10 +209,10 @@ function renderResults(el: HTMLElement): void {
       <table class="comparison-table" style="width:100%;border-collapse:collapse;">
         <thead>
           <tr>
-            <th style="min-width:160px;"></th>
+            <th scope="col" style="min-width:160px;"></th>
             ${state.plans.map((_, i) => `
-              <th style="min-width:140px;" class="${i === bestIdx ? 'best-value' : ''}">
-                ${state.planNames[i] || `Plan ${i + 1}`}
+              <th scope="col" style="min-width:140px;" class="${i === bestIdx ? 'best-value' : ''}">
+                ${esc(state.planNames[i] || `Plan ${i + 1}`)}
                 ${i === bestIdx ? `<span class="badge-compliant" style="display:block;margin-top:4px;font-size:0.6875rem;">${t('compare.bestValue')}</span>` : ''}
               </th>
             `).join('')}

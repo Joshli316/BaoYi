@@ -1,6 +1,7 @@
 import { t, getLang } from '../i18n';
-import { universities, University, WaiverCriterion } from '../data/waiver-criteria';
+import { universities, University } from '../data/waiver-criteria';
 import { saveState, loadState } from '../utils/storage';
+import { renderStepper, refreshIcons } from '../utils/ui';
 
 interface WaiverState {
   step: number;
@@ -54,7 +55,7 @@ function renderCurrentStep(): void {
   wrapper.appendChild(content);
   container.appendChild(wrapper);
 
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderStep1(el: HTMLElement): void {
@@ -106,7 +107,7 @@ function renderStep2(el: HTMLElement): void {
     <div style="background:var(--red-100);border-left:4px solid var(--red-500);padding:16px;margin-bottom:24px;">
       <div style="display:flex;align-items:flex-start;gap:8px;">
         <i data-lucide="x-circle" style="width:18px;height:18px;color:var(--red-700);flex-shrink:0;margin-top:2px;"></i>
-        <p style="font-size:0.875rem;color:var(--red-700);">${lang === 'zh' ? 'J-1签证持有人在此学校不能豁免SHIP。' : 'J-1 visa holders cannot waive SHIP at this university.'}</p>
+        <p style="font-size:0.875rem;color:var(--red-700);">${t('waiver.j1Warning')}</p>
       </div>
     </div>
   ` : '';
@@ -140,8 +141,9 @@ function renderStep2(el: HTMLElement): void {
     const id = (group as HTMLElement).dataset.criterion!;
     if (state.answers[id] !== undefined) {
       group.querySelectorAll('button').forEach(btn => {
-        btn.classList.toggle('active', (btn as HTMLElement).dataset.value === String(state.answers[id]));
-        if ((btn as HTMLElement).dataset.value === String(state.answers[id])) {
+        const selected = (btn as HTMLElement).dataset.value === String(state.answers[id]);
+        btn.setAttribute('aria-pressed', String(selected));
+        if (selected) {
           (btn as HTMLElement).style.background = 'var(--emerald-600)';
           (btn as HTMLElement).style.color = 'white';
         }
@@ -165,13 +167,15 @@ function renderStep2(el: HTMLElement): void {
       const id = (group as HTMLElement).dataset.criterion!;
       state.answers[id] = (btn as HTMLElement).dataset.value!;
       save();
-      // Update visual
+      // Update visual + aria
       group.querySelectorAll('button').forEach(b => {
         (b as HTMLElement).style.background = '';
         (b as HTMLElement).style.color = '';
+        b.setAttribute('aria-pressed', 'false');
       });
       (btn as HTMLElement).style.background = 'var(--emerald-600)';
       (btn as HTMLElement).style.color = 'white';
+      btn.setAttribute('aria-pressed', 'true');
     });
   });
 
@@ -182,6 +186,19 @@ function renderStep2(el: HTMLElement): void {
   });
 
   el.querySelector('#waiver-next')?.addEventListener('click', () => {
+    const hasInput = Object.keys(state.answers).length > 0;
+    const nudge = el.querySelector('#waiver-nudge');
+    if (!hasInput && !nudge) {
+      const warn = document.createElement('div');
+      warn.id = 'waiver-nudge';
+      warn.className = 'result-panel-warn';
+      warn.style.marginTop = '16px';
+      warn.innerHTML = `<p style="font-size:0.875rem;margin-bottom:12px;">${t('error.noInput')}</p>
+        <button class="btn-primary" id="waiver-force" style="font-size:0.875rem;padding:8px 20px;">${t('error.continueAnyway')}</button>`;
+      el.querySelector('#waiver-next')!.parentElement!.after(warn);
+      warn.querySelector('#waiver-force')!.addEventListener('click', () => { state.step = 3; save(); renderCurrentStep(); });
+      return;
+    }
     state.step = 3;
     save();
     renderCurrentStep();
@@ -224,7 +241,7 @@ function renderStep3(el: HTMLElement): void {
             ${t(`waiver.result.${verdict}`)}
           </span>
           <p style="margin-top:8px;font-size:0.875rem;color:var(--text-body);">
-            ${lang === 'zh' ? uni.nameZh : uni.name} — ${passCount} ${lang === 'zh' ? '项通过' : 'pass'}, ${failCount} ${lang === 'zh' ? '项不通过' : 'fail'}, ${warnCount} ${lang === 'zh' ? '项待确认' : 'to verify'}
+            ${lang === 'zh' ? uni.nameZh : uni.name} — ${passCount} ${t('waiver.result.passCount')}, ${failCount} ${t('waiver.result.failCount')}, ${warnCount} ${t('waiver.result.warnCount')}
           </p>
         </div>
       </div>
@@ -265,6 +282,18 @@ function renderStep3(el: HTMLElement): void {
       <button class="btn-secondary" id="waiver-back3">${t('common.back')}</button>
       <button class="btn-primary" id="waiver-reset">${t('common.reset')}</button>
     </div>
+
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border-color);">
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:12px;">${t('common.whatsNext')}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="#compare" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="columns-3" style="width:16px;height:16px;"></i> ${t('nav.compare')}
+        </a>
+        <a href="#cost" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="calculator" style="width:16px;height:16px;"></i> ${t('nav.cost')}
+        </a>
+      </div>
+    </div>
   `;
 
   el.querySelector('#waiver-back3')?.addEventListener('click', () => {
@@ -281,23 +310,6 @@ function renderStep3(el: HTMLElement): void {
 }
 
 // --- Helpers ---
-
-function renderStepper(current: number, total: number): HTMLElement {
-  const stepper = document.createElement('div');
-  stepper.className = 'stepper';
-  for (let i = 1; i <= total; i++) {
-    const step = document.createElement('div');
-    step.className = `stepper-step ${i < current ? 'completed' : i === current ? 'active' : 'upcoming'}`;
-    step.textContent = i < current ? '✓' : String(i);
-    stepper.appendChild(step);
-    if (i < total) {
-      const line = document.createElement('div');
-      line.className = `stepper-line ${i < current ? 'completed' : ''}`;
-      stepper.appendChild(line);
-    }
-  }
-  return stepper;
-}
 
 function getCriteriaFields(uni: University): string {
   const lang = getLang();

@@ -1,5 +1,6 @@
+import { refreshIcons } from '../utils/ui';
 import { t, getLang } from '../i18n';
-import { triageSituations, careLevels, TriageSituation } from '../data/care-triage';
+import { triageSituations, careLevels } from '../data/care-triage';
 
 let container: HTMLElement;
 let selectedId: string | null = null;
@@ -29,7 +30,7 @@ function renderUI(): void {
   }
 
   container.appendChild(wrapper);
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderSelector(wrapper: HTMLElement): void {
@@ -83,8 +84,9 @@ function renderSelector(wrapper: HTMLElement): void {
 
 function renderResult(wrapper: HTMLElement): void {
   const lang = getLang();
-  const situation = triageSituations.find(s => s.id === selectedId)!;
-  const level = careLevels.find(l => l.id === situation.recommendedLevel)!;
+  const situation = triageSituations.find(s => s.id === selectedId);
+  if (!situation) { selectedId = null; renderUI(); return; }
+  const level = careLevels.find(l => l.id === situation.recommendedLevel);
 
   const panelClass = situation.isEmergency ? 'result-panel-fail' : situation.recommendedLevel === 'urgent' ? 'result-panel-warn' : 'result-panel-pass';
   const icon = situation.isEmergency ? 'alert-triangle' : situation.recommendedLevel === 'urgent' ? 'clock' : situation.recommendedLevel === 'primary' ? 'building-2' : 'monitor';
@@ -170,10 +172,10 @@ function renderResult(wrapper: HTMLElement): void {
       <table class="comparison-table" style="width:100%;border-collapse:collapse;">
         <thead>
           <tr>
-            <th>${lang === 'zh' ? '就医方式' : 'Care Level'}</th>
-            <th>${t('common.withInsurance')}</th>
-            <th>${t('common.withoutInsurance')}</th>
-            <th>${lang === 'zh' ? '开放时间' : 'Hours'}</th>
+            <th scope="col">${t('wheretogo.careLevel')}</th>
+            <th scope="col">${t('common.withInsurance')}</th>
+            <th scope="col">${t('common.withoutInsurance')}</th>
+            <th scope="col">${t('wheretogo.hours')}</th>
           </tr>
         </thead>
         <tbody>
@@ -193,6 +195,18 @@ function renderResult(wrapper: HTMLElement): void {
       <i data-lucide="shield-alert" style="width:14px;height:14px;display:inline;vertical-align:middle;"></i>
       ${t('disclaimer')}
     </p>
+
+    <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--border-color);">
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:12px;">${t('common.whatsNext')}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="#cost" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="calculator" style="width:16px;height:16px;"></i> ${t('nav.cost')}
+        </a>
+        <a href="#mentalhealth" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="heart-pulse" style="width:16px;height:16px;"></i> ${t('nav.mentalhealth')}
+        </a>
+      </div>
+    </div>
   `;
 
   wrapper.querySelector('#triage-back')?.addEventListener('click', () => {

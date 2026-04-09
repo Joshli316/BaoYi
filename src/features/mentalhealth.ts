@@ -1,3 +1,4 @@
+import { refreshIcons } from '../utils/ui';
 import { t, getLang } from '../i18n';
 import { mentalHealthResources, findTherapistSteps, insuranceCoverageInfo, ResourceCategory } from '../data/mental-health-resources';
 
@@ -23,7 +24,7 @@ function renderUI(): void {
   const crisisResources = mentalHealthResources.filter(r => r.isCrisis);
   const categories: (ResourceCategory | 'all')[] = ['all', 'crisis', 'campus', 'insurance', 'online', 'free'];
   const categoryLabels: Record<string, string> = {
-    all: lang === 'zh' ? '全部' : 'All',
+    all: t('mh.category.all'),
     crisis: t('mh.category.crisis'),
     campus: t('mh.category.campus'),
     insurance: t('mh.category.insurance'),
@@ -50,7 +51,7 @@ function renderUI(): void {
         ${crisisResources.map(r => `
           <div style="background:rgba(255,255,255,0.9);padding:12px 16px;border-radius:6px;">
             <strong style="color:var(--text-heading);">${lang === 'zh' ? r.nameZh : r.name}</strong>
-            ${r.phone ? `<p class="font-mono" style="font-size:1.125rem;color:var(--red-700);margin-top:4px;">${r.phone}</p>` : ''}
+            ${r.phone ? `<p class="font-mono" style="font-size:1.125rem;margin-top:4px;"><a href="tel:${r.phone.replace(/[^0-9+]/g, '')}" style="color:var(--red-700);text-decoration:underline;">${r.phone}</a></p>` : ''}
             <p style="font-size:0.8125rem;color:var(--text-body);margin-top:4px;">${lang === 'zh' ? r.accessZh : r.access}</p>
           </div>
         `).join('')}
@@ -78,7 +79,7 @@ function renderUI(): void {
               <div style="display:grid;gap:6px;font-size:0.8125rem;">
                 <div><strong>${t('mh.cost')}:</strong> <span>${lang === 'zh' ? r.costZh : r.cost}</span></div>
                 <div><strong>${t('mh.access')}:</strong> <span>${lang === 'zh' ? r.accessZh : r.access}</span></div>
-                ${r.phone ? `<div><strong>${t('mh.phone')}:</strong> <span class="font-mono">${r.phone}</span></div>` : ''}
+                ${r.phone ? `<div><strong>${t('mh.phone')}:</strong> <a href="tel:${r.phone.replace(/[^0-9+]/g, '')}" class="font-mono" style="color:var(--emerald-600);">${r.phone}</a></div>` : ''}
                 ${r.url ? `<a href="${r.url}" target="_blank" rel="noopener" class="btn-ghost" style="font-size:0.8125rem;padding:4px 8px;margin-top:4px;display:inline-flex;align-items:center;gap:4px;"><i data-lucide="external-link" style="width:14px;height:14px;"></i>${t('common.learnMore')}</a>` : ''}
               </div>
             </div>
@@ -113,10 +114,10 @@ function renderUI(): void {
         ${t('mh.insuranceCoverage')}
       </h2>
       <div class="worked-example">
-        <p style="margin-bottom:12px;"><strong>${lang === 'zh' ? '什么是心理健康平等法？' : 'What is Mental Health Parity?'}</strong></p>
+        <p style="margin-bottom:12px;"><strong>${t('mh.parityQuestion')}</strong></p>
         <p style="margin-bottom:12px;">${lang === 'zh' ? insuranceCoverageInfo.parityExplainZh : insuranceCoverageInfo.parityExplain}</p>
-        <p style="margin-bottom:12px;"><strong>${lang === 'zh' ? '典型费用' : 'Typical Costs'}:</strong> ${lang === 'zh' ? insuranceCoverageInfo.typicalCopayZh : insuranceCoverageInfo.typicalCopay}</p>
-        <p><strong>${lang === 'zh' ? '如何找到网络内治疗师' : 'Finding In-Network Therapists'}:</strong> ${lang === 'zh' ? insuranceCoverageInfo.howToFindInNetworkZh : insuranceCoverageInfo.howToFindInNetwork}</p>
+        <p style="margin-bottom:12px;"><strong>${t('mh.typicalCosts')}:</strong> ${lang === 'zh' ? insuranceCoverageInfo.typicalCopayZh : insuranceCoverageInfo.typicalCopay}</p>
+        <p><strong>${t('mh.findInNetwork')}:</strong> ${lang === 'zh' ? insuranceCoverageInfo.howToFindInNetworkZh : insuranceCoverageInfo.howToFindInNetwork}</p>
       </div>
     </section>
 
@@ -128,9 +129,7 @@ function renderUI(): void {
           ${t('mh.culturalNote')}
         </h3>
         <p style="font-size:0.9375rem;color:var(--amber-800);">
-          ${lang === 'zh'
-            ? '寻找了解留学生文化背景的治疗师很重要。面试治疗师时，可以问：你有与留学生或移民群体工作的经验吗？你如何处理文化差异？你能用我习惯的语言进行治疗吗？许多治疗师提供免费的15分钟初次电话咨询。'
-            : 'Finding a therapist who understands your cultural background matters. When evaluating a therapist, ask: Do you have experience working with international students or immigrants? How do you approach cultural differences in therapy? Can you conduct sessions in my preferred language? Many therapists offer a free 15-minute initial phone consultation.'}
+          ${t('mh.culturalParagraph')}
         </p>
       </div>
     </section>
@@ -150,5 +149,5 @@ function renderUI(): void {
   });
 
   container.appendChild(wrapper);
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }

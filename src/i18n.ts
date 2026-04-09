@@ -19,30 +19,30 @@ const strings: Strings = {
   'nav.bill': { en: 'Bill Explainer', zh: '账单解读' },
 
   // Hero
-  'hero.title': { en: 'Navigate US Health Insurance with Confidence', zh: '自信应对美国医疗保险' },
-  'hero.subtitle': { en: 'Free tools built for international students. Check waiver eligibility, verify J-1 compliance, compare plans, and understand your coverage — in English and Chinese.', zh: '专为留学生打造的免费工具。检查保险豁免资格、验证J-1签证合规性、对比保险方案、了解你的保障——中英双语。' },
-  'hero.cta': { en: 'Get Started', zh: '开始使用' },
+  'hero.title': { en: 'Your Guide to US Health Insurance', zh: '你的美国医保指南' },
+  'hero.subtitle': { en: 'Free bilingual tools for international students. Check waiver eligibility, verify J-1 compliance, compare plans, and estimate costs.', zh: '专为留学生打造的免费中英双语工具。检查保险豁免资格、验证J-1签证合规性、对比保险方案、估算费用。' },
+  'hero.cta': { en: 'Check My Waiver', zh: '检查我的豁免资格' },
 
   // Feature cards
   'feature.waiver.title': { en: 'Waiver Eligibility', zh: '豁免资格检查' },
   'feature.waiver.desc': { en: 'Check if your plan qualifies to waive university SHIP', zh: '检查你的保险是否符合豁免学校SHIP的条件' },
   'feature.j1.title': { en: 'J-1 Compliance', zh: 'J-1合规检查' },
-  'feature.j1.desc': { en: 'Check if your plan meets J-1 requirements', zh: '检查你的保险是否符合J-1签证要求' },
+  'feature.j1.desc': { en: 'Enter your coverage numbers and see if you pass all 6 rules', zh: '输入保障数字，看你是否满足全部6项规定' },
   'feature.compare.title': { en: 'Compare Plans', zh: '保险对比' },
-  'feature.compare.desc': { en: 'Compare up to 3 plans side by side', zh: '最多3个保险方案并排对比' },
+  'feature.compare.desc': { en: 'See which plan costs less for your usage level', zh: '看看哪个方案对你更划算' },
   'feature.glossary.title': { en: 'Insurance Glossary', zh: '保险术语' },
-  'feature.glossary.desc': { en: 'Plain-English definitions with examples', zh: '通俗易懂的定义和示例' },
+  'feature.glossary.desc': { en: 'What deductible, copay, and coinsurance actually mean', zh: '免赔额、挂号费、共保到底是什么意思' },
   'feature.wheretogo.title': { en: 'Where Should I Go?', zh: '去哪看病？' },
-  'feature.wheretogo.desc': { en: 'Find the right care for your situation', zh: '根据症状找到合适的就医方式' },
+  'feature.wheretogo.desc': { en: 'ER, urgent care, or campus clinic? Pick your symptom and find out', zh: '急诊、紧急诊所还是校医院？选择症状找答案' },
   'feature.cost.title': { en: 'Cost Estimator', zh: '费用估算' },
-  'feature.cost.desc': { en: 'Estimate out-of-pocket costs for common scenarios', zh: '估算常见医疗场景的自付费用' },
+  'feature.cost.desc': { en: 'Pick a scenario like "broken arm" and see what you\'d pay', zh: '选一个场景如"骨折"看看你要付多少' },
   'feature.mentalhealth.title': { en: 'Mental Health Resources', zh: '心理健康资源' },
-  'feature.mentalhealth.desc': { en: 'Find support, therapy, and crisis resources', zh: '获取心理支持、治疗和危机资源' },
+  'feature.mentalhealth.desc': { en: 'Crisis hotlines, campus counseling, and finding a therapist', zh: '危机热线、校内咨询和寻找治疗师' },
   'feature.bill.title': { en: 'I Got a Bill', zh: '我收到了账单' },
-  'feature.bill.desc': { en: 'Understand your EOB and medical bills', zh: '了解你的保险理赔说明和医疗账单' },
+  'feature.bill.desc': { en: 'Enter your bill numbers and see what each line means', zh: '输入账单数字，看看每一项是什么意思' },
 
   // Disclaimer
-  'disclaimer': { en: 'This is not medical or legal advice. Consult a qualified professional for personalized guidance.', zh: '本工具不构成医疗或法律建议。请咨询专业人士获取个性化指导。' },
+  'disclaimer': { en: 'This is not medical or legal advice. Talk to a licensed professional about your situation.', zh: '本工具不构成医疗或法律建议。请咨询持证专业人士了解你的具体情况。' },
 
   // Common
   'common.back': { en: 'Back', zh: '返回' },
@@ -126,7 +126,7 @@ const strings: Strings = {
 
   // Compare
   'compare.title': { en: 'Plan Comparison Tool', zh: '保险方案对比工具' },
-  'compare.subtitle': { en: 'Compare up to 3 plans side by side across different usage scenarios.', zh: '在不同使用场景下最多对比3个保险方案。' },
+  'compare.subtitle': { en: 'Enter your plan details, pick a scenario, and see which plan costs less.', zh: '输入保险详情，选择场景，看看哪个方案更划算。' },
   'compare.addPlan': { en: 'Add Plan', zh: '添加方案' },
   'compare.removePlan': { en: 'Remove', zh: '移除' },
   'compare.planName': { en: 'Plan Name', zh: '方案名称' },
@@ -152,7 +152,7 @@ const strings: Strings = {
 
   // Glossary
   'glossary.title': { en: 'Insurance Terminology Glossary', zh: '保险术语表' },
-  'glossary.subtitle': { en: 'Plain-language definitions with worked examples and common misconceptions.', zh: '通俗易懂的定义，附带计算示例和常见误解。' },
+  'glossary.subtitle': { en: 'What each insurance term actually means, with real-dollar examples.', zh: '每个保险术语的真正含义，附带真实金额示例。' },
   'glossary.example': { en: 'Worked Example', zh: '计算示例' },
   'glossary.misconception': { en: 'Common Misconception', zh: '常见误解' },
   'glossary.relatedTerms': { en: 'Related Terms', zh: '相关术语' },
@@ -175,7 +175,7 @@ const strings: Strings = {
 
   // Cost Estimator
   'cost.title': { en: 'Cost Estimator', zh: '费用估算器' },
-  'cost.subtitle': { en: 'Estimate your out-of-pocket costs for common medical scenarios.', zh: '估算常见医疗场景的自付费用。' },
+  'cost.subtitle': { en: 'Pick a medical scenario and see what you\'d pay with your plan.', zh: '选择一个医疗场景，看看用你的保险需要付多少。' },
   'cost.selectScenario': { en: 'Select a medical scenario', zh: '选择医疗场景' },
   'cost.planDetails': { en: 'Your plan details (or use defaults)', zh: '你的保险详情（或使用默认值）' },
   'cost.useDefaults': { en: 'Use typical SHIP defaults', zh: '使用典型SHIP默认值' },
@@ -192,7 +192,7 @@ const strings: Strings = {
 
   // Mental Health
   'mh.title': { en: 'Mental Health Resources', zh: '心理健康资源' },
-  'mh.subtitle': { en: 'Support, therapy options, and crisis resources for international students.', zh: '为留学生提供的心理支持、治疗选择和危机资源。' },
+  'mh.subtitle': { en: 'Crisis hotlines, free counseling, and how to find a therapist your insurance covers.', zh: '危机热线、免费咨询，以及如何找到保险覆盖的治疗师。' },
   'mh.crisis.title': { en: 'Crisis Resources — Available 24/7', zh: '危机资源——全天候可用' },
   'mh.crisis.subtitle': { en: 'If you or someone you know is in immediate danger, call 911.', zh: '如果你或你认识的人处于紧急危险中，请拨打911。' },
   'mh.category.campus': { en: 'Campus Counseling', zh: '校内咨询' },
@@ -209,7 +209,7 @@ const strings: Strings = {
 
   // Bill Explainer
   'bill.title': { en: 'I Got a Bill — Now What?', zh: '我收到了账单——怎么办？' },
-  'bill.subtitle': { en: 'Enter numbers from your EOB or medical bill to see a plain-language breakdown.', zh: '输入你的理赔说明或医疗账单上的数字，查看通俗易懂的解读。' },
+  'bill.subtitle': { en: 'Type in the numbers from your EOB or bill. We\'ll explain each one.', zh: '输入你的理赔说明或账单上的数字，我们帮你逐项解读。' },
   'bill.billedAmount': { en: 'Billed Amount ($)', zh: '账单金额（$）' },
   'bill.allowedAmount': { en: 'Allowed Amount ($)', zh: '保险认可金额（$）' },
   'bill.insurancePaid': { en: 'Insurance Paid ($)', zh: '保险已支付（$）' },
@@ -232,6 +232,37 @@ const strings: Strings = {
   'error.invalidNumber': { en: 'Please enter a valid number', zh: '请输入有效的数字' },
   'error.minValue': { en: 'Value must be at least', zh: '数值不能低于' },
   'error.maxValue': { en: 'Value must be at most', zh: '数值不能超过' },
+  'error.loadFailed': { en: 'Could not load this page. Check your connection and refresh.', zh: '无法加载此页面。请检查网络连接后刷新。' },
+  'error.noInput': { en: 'You haven\'t filled in any fields yet. Results will show as "needs verification." Continue anyway?', zh: '你还没有填写任何字段。结果将显示为"需要确认"。仍然继续？' },
+  'error.continueAnyway': { en: 'Continue Anyway', zh: '仍然继续' },
+  'common.whatsNext': { en: 'What\'s next?', zh: '下一步推荐' },
+
+  // Waiver results (inline strings moved to i18n)
+  'waiver.j1Warning': { en: 'J-1 visa holders cannot waive SHIP at this university.', zh: 'J-1签证持有人在此学校不能豁免SHIP。' },
+  'waiver.result.passCount': { en: 'pass', zh: '项通过' },
+  'waiver.result.failCount': { en: 'fail', zh: '项不通过' },
+  'waiver.result.warnCount': { en: 'to verify', zh: '项待确认' },
+
+  // J-1 inline strings
+  'j1.federalMinimum': { en: '(federal minimum)', zh: '（联邦最低要求）' },
+  'j1.acceptedAgencies': { en: 'Accepted rating agencies:', zh: '接受的评级机构：' },
+
+  // Where to Go inline strings
+  'wheretogo.careLevel': { en: 'Care Level', zh: '就医方式' },
+  'wheretogo.hours': { en: 'Hours', zh: '开放时间' },
+
+  // Mental Health inline strings
+  'mh.category.all': { en: 'All', zh: '全部' },
+  'mh.parityQuestion': { en: 'What is Mental Health Parity?', zh: '什么是心理健康平等法？' },
+  'mh.typicalCosts': { en: 'Typical Costs', zh: '典型费用' },
+  'mh.findInNetwork': { en: 'Finding In-Network Therapists', zh: '如何找到网络内治疗师' },
+  'mh.culturalParagraph': { en: 'Finding a therapist who understands your cultural background matters. When evaluating a therapist, ask: Do you have experience working with international students or immigrants? How do you approach cultural differences in therapy? Can you conduct sessions in my preferred language? Many therapists offer a free 15-minute initial phone consultation.', zh: '寻找了解留学生文化背景的治疗师很重要。面试治疗师时，可以问：你有与留学生或移民群体工作的经验吗？你如何处理文化差异？你能用我习惯的语言进行治疗吗？许多治疗师提供免费的15分钟初次电话咨询。' },
+
+  // Bill flow inline strings
+  'bill.flow.billed': { en: 'Billed', zh: '账单金额' },
+  'bill.flow.allowed': { en: 'Allowed', zh: '保险认可' },
+  'bill.flow.insurancePays': { en: 'Insurance Pays', zh: '保险支付' },
+  'bill.flow.youPay': { en: 'You Pay', zh: '你需支付' },
 };
 
 export function t(key: string): string {

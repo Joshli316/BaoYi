@@ -1,6 +1,7 @@
 import { t, getLang } from '../i18n';
-import { j1Requirements, ratingAgencies, j1Source, J1Requirement } from '../data/j1-minimums';
+import { j1Requirements, ratingAgencies, j1Source } from '../data/j1-minimums';
 import { saveState, loadState } from '../utils/storage';
+import { renderStepper, refreshIcons } from '../utils/ui';
 
 interface J1State {
   step: number;
@@ -46,7 +47,7 @@ function renderCurrentStep(): void {
 
   wrapper.appendChild(content);
   container.appendChild(wrapper);
-  if ((window as any).lucide) (window as any).lucide.createIcons();
+  refreshIcons();
 }
 
 function renderInputStep(el: HTMLElement): void {
@@ -64,7 +65,7 @@ function renderInputStep(el: HTMLElement): void {
             value="${state.answers[req.id] !== undefined ? state.answers[req.id] : ''}">
           <p style="font-size:0.8125rem;color:var(--text-muted);margin-top:4px;">
             ${req.comparison === 'gte' ? '≥' : '≤'} <span class="font-mono">${req.unit === '%' ? req.threshold + '%' : '$' + (req.threshold || 0).toLocaleString()}</span>
-            ${lang === 'zh' ? '（联邦最低要求）' : '(federal minimum)'}
+            ${t('j1.federalMinimum')}
           </p>
         </div>
       `).join('')}
@@ -85,7 +86,7 @@ function renderInputStep(el: HTMLElement): void {
           </button>
         </div>
         <div style="margin-top:12px;font-size:0.8125rem;color:var(--text-muted);">
-          <strong>${lang === 'zh' ? '接受的评级机构：' : 'Accepted rating agencies:'}</strong>
+          <strong>${t('j1.acceptedAgencies')}</strong>
           ${ratingAgencies.map(a => `${lang === 'zh' ? a.nameZh : a.name} ${a.minimumRating}`).join(' · ')}
         </div>
       </div>
@@ -113,7 +114,9 @@ function renderInputStep(el: HTMLElement): void {
 
   const savedRating = state.answers['insurer-rating'];
   el.querySelectorAll('.rating-btn').forEach(btn => {
-    if ((btn as HTMLElement).dataset.value === savedRating) {
+    const selected = (btn as HTMLElement).dataset.value === savedRating;
+    btn.setAttribute('aria-pressed', String(selected));
+    if (selected) {
       (btn as HTMLElement).style.background = 'var(--emerald-600)';
       (btn as HTMLElement).style.color = 'white';
     }
@@ -123,13 +126,28 @@ function renderInputStep(el: HTMLElement): void {
       el.querySelectorAll('.rating-btn').forEach(b => {
         (b as HTMLElement).style.background = '';
         (b as HTMLElement).style.color = '';
+        b.setAttribute('aria-pressed', 'false');
       });
       (btn as HTMLElement).style.background = 'var(--emerald-600)';
       (btn as HTMLElement).style.color = 'white';
+      btn.setAttribute('aria-pressed', 'true');
     });
   });
 
   el.querySelector('#j1-check')?.addEventListener('click', () => {
+    const hasInput = Object.keys(state.answers).length > 0;
+    const nudge = el.querySelector('#j1-nudge');
+    if (!hasInput && !nudge) {
+      const warn = document.createElement('div');
+      warn.id = 'j1-nudge';
+      warn.className = 'result-panel-warn';
+      warn.style.marginTop = '16px';
+      warn.innerHTML = `<p style="font-size:0.875rem;margin-bottom:12px;">${t('error.noInput')}</p>
+        <button class="btn-primary" id="j1-force" style="font-size:0.875rem;padding:8px 20px;">${t('error.continueAnyway')}</button>`;
+      el.querySelector('#j1-check')!.parentElement!.after(warn);
+      warn.querySelector('#j1-force')!.addEventListener('click', () => { state.step = 2; save(); renderCurrentStep(); });
+      return;
+    }
     state.step = 2;
     save();
     renderCurrentStep();
@@ -196,6 +214,18 @@ function renderResultStep(el: HTMLElement): void {
       <button class="btn-secondary" id="j1-back">${t('common.back')}</button>
       <button class="btn-primary" id="j1-reset">${t('common.reset')}</button>
     </div>
+
+    <div style="margin-top:32px;padding-top:24px;border-top:1px solid var(--border-color);">
+      <p style="font-size:0.8125rem;color:var(--text-muted);margin-bottom:12px;">${t('common.whatsNext')}</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a href="#cost" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="calculator" style="width:16px;height:16px;"></i> ${t('nav.cost')}
+        </a>
+        <a href="#compare" class="btn-ghost" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:6px;">
+          <i data-lucide="columns-3" style="width:16px;height:16px;"></i> ${t('nav.compare')}
+        </a>
+      </div>
+    </div>
   `;
 
   el.querySelector('#j1-back')?.addEventListener('click', () => {
@@ -204,23 +234,6 @@ function renderResultStep(el: HTMLElement): void {
   el.querySelector('#j1-reset')?.addEventListener('click', () => {
     state = { step: 1, answers: {} }; save(); renderCurrentStep();
   });
-}
-
-function renderStepper(current: number, total: number): HTMLElement {
-  const stepper = document.createElement('div');
-  stepper.className = 'stepper';
-  for (let i = 1; i <= total; i++) {
-    const step = document.createElement('div');
-    step.className = `stepper-step ${i < current ? 'completed' : i === current ? 'active' : 'upcoming'}`;
-    step.textContent = i < current ? '✓' : String(i);
-    stepper.appendChild(step);
-    if (i < total) {
-      const line = document.createElement('div');
-      line.className = `stepper-line ${i < current ? 'completed' : ''}`;
-      stepper.appendChild(line);
-    }
-  }
-  return stepper;
 }
 
 interface J1Result {
