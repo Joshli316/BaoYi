@@ -41,6 +41,16 @@ const strings: Strings = {
   'feature.bill.title': { en: 'I Got a Bill', zh: '我收到了账单' },
   'feature.bill.desc': { en: 'Enter your bill numbers and see what each line means', zh: '输入账单数字，看看每一项是什么意思' },
 
+  // Hero preview card
+  'hero.preview.label': { en: 'Sample Waiver Result', zh: '豁免结果示例' },
+  'hero.preview.deductible': { en: 'Deductible ≤ $500', zh: '免赔额 ≤ $500' },
+  'hero.preview.network': { en: 'In-network providers nearby', zh: '附近有网络内医疗机构' },
+  'hero.preview.mental': { en: 'Mental health at parity', zh: '心理健康同等保障' },
+  'hero.preview.rx': { en: 'Prescription coverage', zh: '处方药保障' },
+  'hero.preview.verdict': { en: 'Likely Eligible', zh: '很可能符合条件' },
+  'hero.badge.startHere': { en: 'Start Here', zh: '从这开始' },
+  'hero.badge.required': { en: 'Required for J-1', zh: 'J-1必须' },
+
   // Disclaimer
   'disclaimer': { en: 'This is not medical or legal advice. Talk to a licensed professional about your situation.', zh: '本工具不构成医疗或法律建议。请咨询持证专业人士了解你的具体情况。' },
 

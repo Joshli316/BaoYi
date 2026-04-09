@@ -121,42 +121,111 @@ function updateNavActiveState(): void {
 
 // --- Home / Landing ---
 function renderHome(container: HTMLElement): void {
-  const features = [
-    { tab: 'waiver', icon: 'shield-check', titleKey: 'feature.waiver.title', descKey: 'feature.waiver.desc' },
-    { tab: 'j1', icon: 'shield', titleKey: 'feature.j1.title', descKey: 'feature.j1.desc' },
+  // Primary features (large cards with CTAs)
+  const primary = [
+    { tab: 'waiver', icon: 'shield-check', titleKey: 'feature.waiver.title', descKey: 'feature.waiver.desc', badge: 'hero.badge.startHere', badgeClass: 'badge-accent' },
+    { tab: 'j1', icon: 'shield', titleKey: 'feature.j1.title', descKey: 'feature.j1.desc', badge: 'hero.badge.required', badgeClass: 'badge-info' },
+  ];
+
+  // Secondary features (medium cards)
+  const secondary = [
     { tab: 'compare', icon: 'columns-3', titleKey: 'feature.compare.title', descKey: 'feature.compare.desc' },
-    { tab: 'glossary', icon: 'book-open', titleKey: 'feature.glossary.title', descKey: 'feature.glossary.desc' },
-    { tab: 'wheretogo', icon: 'map-pin', titleKey: 'feature.wheretogo.title', descKey: 'feature.wheretogo.desc' },
     { tab: 'cost', icon: 'calculator', titleKey: 'feature.cost.title', descKey: 'feature.cost.desc' },
+    { tab: 'wheretogo', icon: 'map-pin', titleKey: 'feature.wheretogo.title', descKey: 'feature.wheretogo.desc' },
+  ];
+
+  // Tertiary features (compact cards)
+  const tertiary = [
+    { tab: 'glossary', icon: 'book-open', titleKey: 'feature.glossary.title', descKey: 'feature.glossary.desc' },
     { tab: 'mentalhealth', icon: 'heart-pulse', titleKey: 'feature.mentalhealth.title', descKey: 'feature.mentalhealth.desc' },
     { tab: 'bill', icon: 'receipt', titleKey: 'feature.bill.title', descKey: 'feature.bill.desc' },
   ];
 
   container.innerHTML = `
-    <section style="text-align: center; padding: 48px 16px 32px; max-width: 720px; margin: 0 auto;">
-      <div style="display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; background: var(--emerald-50); border-radius: 50%; margin-bottom: 24px;">
-        <i data-lucide="shield" style="width: 32px; height: 32px; color: var(--emerald-600);"></i>
+    <!-- Hero: Split layout -->
+    <section class="hero-split fade-in">
+      <div class="hero-text">
+        <h1>${t('hero.title')}</h1>
+        <p>${t('hero.subtitle')}</p>
+        <button class="btn-primary" id="hero-cta" style="font-size: 1.125rem; padding: 14px 32px;">${t('hero.cta')}</button>
       </div>
-      <h1 style="margin-bottom: 16px;">${t('hero.title')}</h1>
-      <p style="font-size: 1.125rem; color: var(--text-body); max-width: 600px; margin: 0 auto 32px;">${t('hero.subtitle')}</p>
-      <button class="btn-primary" id="hero-cta" style="font-size: 1.125rem; padding: 14px 32px;">${t('hero.cta')}</button>
+      <div class="preview-card" aria-hidden="true">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+          <span style="font-weight: 700; font-size: 0.8125rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">${t('hero.preview.label')}</span>
+          <span class="badge-compliant"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> ${t('hero.preview.verdict')}</span>
+        </div>
+        <div class="preview-check">
+          <i data-lucide="check-circle-2" style="width:18px;height:18px;color:var(--emerald-500);flex-shrink:0;"></i>
+          ${t('hero.preview.deductible')}
+        </div>
+        <div class="preview-check">
+          <i data-lucide="check-circle-2" style="width:18px;height:18px;color:var(--emerald-500);flex-shrink:0;"></i>
+          ${t('hero.preview.network')}
+        </div>
+        <div class="preview-check">
+          <i data-lucide="check-circle-2" style="width:18px;height:18px;color:var(--emerald-500);flex-shrink:0;"></i>
+          ${t('hero.preview.mental')}
+        </div>
+        <div class="preview-check">
+          <i data-lucide="check-circle-2" style="width:18px;height:18px;color:var(--emerald-500);flex-shrink:0;"></i>
+          ${t('hero.preview.rx')}
+        </div>
+      </div>
     </section>
 
-    <section style="padding: 16px 0 48px;">
-      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; max-width: 1200px; margin: 0 auto;">
-        ${features.map(f => `
-          <button class="card feature-card" data-tab="${f.tab}" style="padding: 24px; text-align: left; cursor: pointer; border-top: 4px solid var(--navy-900); position: relative;">
-            <div style="display: flex; align-items: flex-start; gap: 16px;">
-              <div style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                <i data-lucide="${f.icon}" style="width: 24px; height: 24px; color: var(--emerald-600);"></i>
+    <!-- Feature cards: Tiered hierarchy -->
+    <section style="padding: 16px 16px 48px;">
+      <div class="feature-grid">
+        <!-- Primary: Waiver + J-1 -->
+        <div class="feature-grid-primary">
+          ${primary.map(f => `
+            <button class="card card-primary feature-card" data-tab="${f.tab}" style="text-align: left; cursor: pointer; position: relative;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <div style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; background: var(--emerald-50); border-radius: 8px;">
+                    <i data-lucide="${f.icon}" class="feature-icon" style="width: 24px; height: 24px; color: var(--emerald-600);"></i>
+                  </div>
+                  <h3>${t(f.titleKey)}</h3>
+                </div>
+                <span class="${f.badgeClass}">${t(f.badge)}</span>
               </div>
-              <div>
-                <h3 style="margin-bottom: 8px;">${t(f.titleKey)}</h3>
-                <p style="font-size: 0.875rem; color: var(--text-body);">${t(f.descKey)}</p>
+              <p style="font-size: 0.9375rem; color: var(--text-body); margin-bottom: 16px;">${t(f.descKey)}</p>
+              <span class="btn-ghost" style="padding: 0; font-size: 0.875rem;">${t(f.titleKey)} →</span>
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Secondary: Compare, Cost, Where to Go -->
+        <div class="feature-grid-secondary">
+          ${secondary.map(f => `
+            <button class="card feature-card" data-tab="${f.tab}" style="padding: 24px; text-align: left; cursor: pointer;">
+              <div style="display: flex; align-items: flex-start; gap: 14px;">
+                <div style="flex-shrink: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; background: var(--bg-alt); border-radius: 8px;">
+                  <i data-lucide="${f.icon}" class="feature-icon" style="width: 22px; height: 22px; color: var(--emerald-600);"></i>
+                </div>
+                <div>
+                  <h3 style="margin-bottom: 6px; font-size: 1.125rem;">${t(f.titleKey)}</h3>
+                  <p style="font-size: 0.9375rem; color: var(--text-body);">${t(f.descKey)}</p>
+                </div>
               </div>
-            </div>
-          </button>
-        `).join('')}
+            </button>
+          `).join('')}
+        </div>
+
+        <!-- Tertiary: Glossary, Mental Health, Bill -->
+        <div class="feature-grid-tertiary">
+          ${tertiary.map(f => `
+            <button class="card feature-card" data-tab="${f.tab}" style="padding: 20px; text-align: left; cursor: pointer;">
+              <div style="display: flex; align-items: center; gap: 12px;">
+                <i data-lucide="${f.icon}" class="feature-icon" style="width: 20px; height: 20px; color: var(--emerald-600); flex-shrink: 0;"></i>
+                <div>
+                  <h3 style="font-size: 1rem; margin-bottom: 2px;">${t(f.titleKey)}</h3>
+                  <p style="font-size: 0.875rem; color: var(--text-muted);">${t(f.descKey)}</p>
+                </div>
+              </div>
+            </button>
+          `).join('')}
+        </div>
       </div>
     </section>
   `;
